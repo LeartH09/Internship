@@ -33,7 +33,7 @@ int main()
         case 7:
         printf("E diele- fundjave\n");
         break;
-
+//test
         default:
         printf("Ju lutem shkruani nje numer nga 1 deri ne 7\n");
     }
