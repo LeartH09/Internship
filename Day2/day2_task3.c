@@ -1,4 +1,3 @@
-#include <stdio.h>
 int main() 
 {
     printf("Shkruani nje numer (7-10):");
