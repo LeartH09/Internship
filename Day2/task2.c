@@ -29,4 +29,6 @@ int main() {
     printf("ID-ja unikale (long): %ld\n", id_studenti);
 
     return 0;
+
+    //test
 }
