@@ -41,3 +41,10 @@ int main() {
 
     return 0;
 }
+/*
+Ky program merr një numër nga përdoruesi (1–12) dhe kontrollon nëse input-i është valid. 
+Më pas përdoruesi zgjedh llojin e pattern-it: me yje (*) ose me numra. 
+Programi përdor dy for loops një për rreshtat dhe një për elementet brenda rreshtit, 
+për të ndërtuar dhe shfaqur pattern-in në mënyrë të rregullt. 
+Në rast të input-it të pavlefshëm ose zgjedhjes së gabuar, shfaqet mesazh gabimi.
+*/
