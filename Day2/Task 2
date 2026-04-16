@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int main() {
+
+    int score = 67;
+
+    if(score < 0 || score > 100) {
+        printf("Invalid input! Score must be between 0 and 100.\n");
+    }
+    else if(score >= 90) {
+        printf("Score: %d -> Excellent (Shkelqyeshem)\n", score);
+    }
+    else if(score >= 75) {
+        printf("Score: %d -> Very Good (Shume mire)\n", score);
+    }
+    else if(score >= 60) {
+        printf("Score: %d -> Good (Mire)\n", score);
+    }
+    else {
+        printf("Score: %d -> Needs Improvement (Ne permiresim)\n", score);
+    }
+
+    return 0;
+}
