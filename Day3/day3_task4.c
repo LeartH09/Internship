@@ -1,3 +1,4 @@
+#include <stdio.h>
 int main() 
 {
     int reps;
@@ -41,3 +42,9 @@ int main()
 
     return 0;
 }
+/*
+Ky program përdor dy variabla numerike dhe pointer për secilën. 
+Shfaq vlerat direkte, adresat në memorie dhe vlerat përmes pointer-it. 
+Më pas ndryshon një vlerë përmes pointer-it, krahason rezultatin para dhe pas 
+dhe kontrollon nëse vlera është rritur ose nëse ndodhet në një interval të caktuar.
+*/
