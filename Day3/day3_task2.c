@@ -1,3 +1,4 @@
+#include <stdio.h>
 int main()
 {
     int start, end;
@@ -53,3 +54,9 @@ int main()
 
     return 0;
 }
+/*
+Ky program merr një interval numrash nga përdoruesi dhe kontrollon nëse është valid. 
+Duke përdorur for loop, kalon nëpër çdo numër dhe me operatorin % ndan numrat në çift dhe tek. 
+Programi numëron dhe llogarit shumën e secilës kategori, pastaj shfaq rezultatet dhe tregon 
+cila kategori ka më shumë numra.
+*/
