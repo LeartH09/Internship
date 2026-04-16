@@ -1,6 +1,6 @@
 int main()
 {
-    int mosha, opioni;
+    int mosha, opsioni;
     char iniciali;
     double pike;
 
