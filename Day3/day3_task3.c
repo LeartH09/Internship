@@ -1,30 +1,30 @@
-int main()
-{
+#include <stdio.h>
+
+int main() {
     int start, end;
+
     int count3 = 0, sum3 = 0;
     int count5 = 0, sum5 = 0;
 
-    printf("Shkruani vleren fillestare: ");
+    printf("Shkruani fillimin: ");
     scanf("%d", &start);
-    
-    printf("Shkruani vleren perfundimtare: ");
+
+    printf("Shkruani fundin: ");
     scanf("%d", &end);
 
-    if(start>end) 
-    {
-        printf("Interval i pavlefshem.\n");
+    if (start > end) {
+        printf("Interval i pavlefshem!\n");
         return 1;
     }
 
-    for(int i = start; i <= end; i++)
-    {
-        if(i % 3 == 0)
-        {
+    for (int i = start; i <= end; i++) {
+
+        if (i % 3 == 0) {
             count3++;
             sum3 += i;
         }
-        if(i % 5 == 0)
-        {
+
+        else if (i % 5 == 0 && i % 3 != 0) {
             count5++;
             sum5 += i;
         }
@@ -42,5 +42,10 @@ int main()
     }
 
     return 0;
-
 }
+/*
+Ky program merr një interval numrash dhe përdor for loop për të analizuar secilin numër. 
+Numrat ndahen në dy kategori: ata që pjesëtohen me 3 dhe ata që pjesëtohen me 5 por jo me 3. 
+Programi numëron dhe llogarit shumën për secilën kategori dhe në fund krahason shumat 
+për të treguar cila është më e madhe.
+*/
