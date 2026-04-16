@@ -1,3 +1,4 @@
+#include <stdio.h>
 int main()
 {
     int start, end;
@@ -44,3 +45,9 @@ int main()
     return 0;
 
 }
+/*
+Ky program merr një interval numrash dhe përdor for loop për të analizuar secilin numër. 
+Numrat ndahen në dy kategori: ata që pjesëtohen me 3 dhe ata që pjesëtohen me 5 por jo me 3. 
+Programi numëron dhe llogarit shumën për secilën kategori dhe në fund krahason shumat 
+për të treguar cila është më e madhe.
+*/
