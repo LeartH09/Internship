@@ -1,0 +1,61 @@
+#include <stdio.h>
+
+int main() {
+
+    // Data të vendosura (për testim)
+    int a = 10;
+    double b = 5.5;
+
+    // Pointerat
+    int *pA = &a;
+    double *pB = &b;
+
+    // Vlera fillestare
+    printf("INITIAL VALUES:\n");
+    printf("a = %d\n", a);
+    printf("b = %.2lf\n", b);
+
+    printf("\nADDRESSES:\n");
+    printf("Address of a = %p\n", &a);
+    printf("Address of b = %p\n", &b);
+
+    printf("\nUSING POINTERS:\n");
+    printf("*pA = %d\n", *pA);
+    printf("*pB = %.2lf\n", *pB);
+
+    // Ndryshim përmes pointer-it
+    *pA = *pA + 15;   // rritje
+    *pB = *pB - 2.5;  // zvogëlim
+
+    printf("\nAFTER CHANGE:\n");
+    printf("a = %d\n", a);
+    printf("b = %.2lf\n", b);
+
+    // Kontroll me if/else
+    printf("\nCHECK RESULTS:\n");
+
+    if(a > 10) {
+        printf("a has increased.\n");
+    } else if(a < 10) {
+        printf("a has decreased.\n");
+    } else {
+        printf("a is unchanged.\n");
+    }
+
+    if(b > 5.5) {
+        printf("b has increased.\n");
+    } else if(b < 5.5) {
+        printf("b has decreased.\n");
+    } else {
+        printf("b is unchanged.\n");
+    }
+
+    // Interval check
+    if(a >= 10 && a <= 30) {
+        printf("a is inside the safe interval (10-30).\n");
+    } else {
+        printf("a is outside the safe interval.\n");
+    }
+
+    return 0;
+}
