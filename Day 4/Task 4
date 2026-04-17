@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+enum Status {
+    LOW = 1,
+    MEDIUM,
+    HIGH
+};
+
+struct Student {
+    int id;
+    char name[50];
+    double progress;
+    enum Status status;
+};
+
+void updateProgress(struct Student *s, double newProgress) {
+
+    printf("\n--- UPDATING VIA POINTER ---\n");
+    printf("Old progress: %.2lf\n", s->progress);
+
+    s->progress = newProgress;   // direct memory change via pointer
+
+    // auto update status
+    if(s->progress < 40)
+        s->status = LOW;
+    else if(s->progress < 70)
+        s->status = MEDIUM;
+    else
+        s->status = HIGH;
+
+    printf("New progress: %.2lf\n", s->progress);
+}
+
+const char* getStatus(enum Status s) {
+    switch(s) {
+        case LOW: return "LOW";
+        case MEDIUM: return "MEDIUM";
+        case HIGH: return "HIGH";
+        default: return "UNKNOWN";
+    }
+}
+
+int main() {
+
+    struct Student students[MAX] = {
+        {1, "Ardi", 75.5, HIGH},
+        {2, "Luan", 60.0, MEDIUM},
+        {3, "Era", 35.0, LOW}
+    };
+
+    int count = 3;
+    int choice;
+
+    while(1) {
+
+        printf("\n===== MENU =====\n");
+        printf("1. Show Students\n");
+        printf("2. Update Progress (POINTER)\n");
+        printf("3. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+
+            case 1:
+                for(int i = 0; i < count; i++) {
+                    printf("\nID: %d\n", students[i].id);
+                    printf("Name: %s\n", students[i].name);
+                    printf("Progress: %.2lf\n", students[i].progress);
+                    printf("Status: %s\n", getStatus(students[i].status));
+                }
+                break;
+
+            case 2: {
+                int id;
+                double newP;
+
+                printf("Enter student ID: ");
+                scanf("%d", &id);
+
+                int found = 0;
+
+                for(int i = 0; i < count; i++) {
+                    if(students[i].id == id) {
+
+                        found = 1;
+
+                        printf("Enter new progress: ");
+                        scanf("%lf", &newP);
+
+                        updateProgress(&students[i], newP);
+
+                        printf("\n✔ Student updated successfully!\n");
+                    }
+                }
+
+                if(!found) {
+                    printf("Student not found!\n");
+                }
+
+                break;
+            }
+
+            case 3:
+                printf("Exiting...\n");
+                return 0;
+
+            default:
+                printf("Invalid option!\n");
+        }
+    }
+}
