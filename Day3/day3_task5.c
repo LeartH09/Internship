@@ -1,3 +1,4 @@
+#include <stdio.h>
 int main() 
 {
     enum Level 
@@ -47,3 +48,9 @@ int main()
 
     return 0;
 }
+/*
+Ky program përdor enum për të përfaqësuar nivelet e një përdoruesi.
+Përdoruesi zgjedh një vlerë dhe programi përdor switch për të shfaqur mesazh.
+Një for loop përdoret për të testuar disa raste dhe në fund programi
+numëron dhe shfaq zgjedhjet valide dhe të pavlefshme.
+*/
