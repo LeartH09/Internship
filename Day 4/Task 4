@@ -1,0 +1,219 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+enum Status {
+    LOW = 1,
+    MEDIUM,
+    HIGH
+};
+
+struct Student {
+    int id;
+    char name[50];
+    double progress;
+    enum Status status;
+};
+
+void setStatus(struct Student *s) {
+    if(s->progress < 40)
+        s->status = LOW;
+    else if(s->progress < 70)
+        s->status = MEDIUM;
+    else
+        s->status = HIGH;
+}
+
+const char* getStatusText(enum Status s) {
+    switch(s) {
+        case LOW: return "LOW";
+        case MEDIUM: return "MEDIUM";
+        case HIGH: return "HIGH";
+        default: return "UNKNOWN";
+    }
+}
+
+void searchStudent(struct Student students[], int count) {
+
+    if(count == 0) {
+        printf("\nNo data available!\n");
+        return;
+    }
+
+    int choice;
+    printf("\nSearch by:\n1. ID\n2. Name\nChoice: ");
+    scanf("%d", &choice);
+
+    int found = 0;
+
+    if(choice == 1) {
+
+        int id;
+        printf("Enter ID: ");
+        scanf("%d", &id);
+
+        for(int i = 0; i < count; i++) {
+            if(students[i].id == id) {
+                found = 1;
+
+                printf("\n--- STUDENT FOUND ---\n");
+                printf("ID: %d\n", students[i].id);
+                printf("Name: %s\n", students[i].name);
+                printf("Progress: %.2lf\n", students[i].progress);
+                printf("Status: %s\n", getStatusText(students[i].status));
+
+                if(students[i].progress < 40)
+                    printf("WARNING: Very low performance!\n");
+                else if(students[i].progress < 70)
+                    printf("NOTE: Needs improvement.\n");
+                else
+                    printf("GOOD: Excellent performance.\n");
+            }
+        }
+    }
+
+    else if(choice == 2) {
+
+        char name[50];
+        printf("Enter Name: ");
+        scanf("%s", name);
+
+        for(int i = 0; i < count; i++) {
+            if(strcmp(students[i].name, name) == 0) {
+                found = 1;
+
+                printf("\n--- STUDENT FOUND ---\n");
+                printf("ID: %d\n", students[i].id);
+                printf("Name: %s\n", students[i].name);
+                printf("Progress: %.2lf\n", students[i].progress);
+                printf("Status: %s\n", getStatusText(students[i].status));
+
+                if(students[i].progress < 40)
+                    printf("WARNING: Critical performance!\n");
+                else if(students[i].progress < 70)
+                    printf("NOTE: Needs improvement.\n");
+                else
+                    printf("GOOD: Strong performance.\n");
+            }
+        }
+    }
+    else {
+        printf("Invalid option!\n");
+        return;
+    }
+
+    if(!found) {
+        printf("\nNo matching student found!\n");
+    }
+}
+
+int main() {
+
+    struct Student students[MAX] = {
+        {1, "Ardi", 75.5, HIGH},
+        {2, "Luan", 60.0, MEDIUM},
+        {3, "Era", 35.0, LOW},
+        {4, "Elira", 88.2, HIGH},
+        {5, "Dren", 42.5, MEDIUM},
+        {6, "Arta", 91.0, HIGH},
+        {7, "Bleron", 25.0, LOW},
+        {8, "Sara", 55.5, MEDIUM}
+    };
+
+    int count = 8;
+    int choice;
+
+    while(1) {
+
+        printf("\n========== MENU ==========\n");
+        printf("1. Add Student\n");
+        printf("2. Show Students\n");
+        printf("3. Show Report\n");
+        printf("4. Search Student\n");
+        printf("5. Exit\n");
+        printf("==========================\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+
+            case 1:
+                if(count >= MAX) {
+                    printf("Max limit reached!\n");
+                    break;
+                }
+
+                printf("\nEnter ID: ");
+                scanf("%d", &students[count].id);
+
+                printf("Enter Name: ");
+                scanf("%s", students[count].name);
+
+                printf("Enter Progress (0-100): ");
+                scanf("%lf", &students[count].progress);
+
+                setStatus(&students[count]);
+
+                count++;
+                printf("Student successfully added!\n");
+                break;
+
+            case 2:
+                printf("\n--- ALL STUDENTS ---\n");
+                for(int i = 0; i < count; i++) {
+                    printf("\nID: %d\n", students[i].id);
+                    printf("Name: %s\n", students[i].name);
+                    printf("Progress: %.2lf\n", students[i].progress);
+                    printf("Status: %s\n", getStatusText(students[i].status));
+                }
+                break;
+
+            case 3: {
+                printf("\n--- ANALYTICAL REPORT ---\n");
+
+                int total = count;
+                int low = 0, med = 0, high = 0;
+                double sum = 0;
+                double max = students[0].progress;
+                double min = students[0].progress;
+
+                for(int i = 0; i < count; i++) {
+
+                    sum += students[i].progress;
+
+                    if(students[i].progress < 40)
+                        low++;
+                    else if(students[i].progress < 70)
+                        med++;
+                    else
+                        high++;
+
+                    if(students[i].progress > max)
+                        max = students[i].progress;
+
+                    if(students[i].progress < min)
+                        min = students[i].progress;
+                }
+
+                printf("Total students: %d\n", total);
+                printf("LOW: %d | MEDIUM: %d | HIGH: %d\n", low, med, high);
+                printf("Average progress: %.2lf\n", sum / total);
+                printf("Max progress: %.2lf\n", max);
+                printf("Min progress: %.2lf\n", min);
+            }
+            break;
+
+            case 4:
+                searchStudent(students, count);
+                break;
+
+            case 5:
+                printf("Exiting program...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+}
