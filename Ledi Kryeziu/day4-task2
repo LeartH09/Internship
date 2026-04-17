@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 5
+
+// enum për statusin
+enum Status { LOW = 1, MEDIUM, HIGH };
+
+// struktura për student
+struct Student {
+    char name[50];
+    int score;
+    enum Status status;
+};
+
+int main() {
+    struct Student students[MAX];
+    int count = 0;
+    int choice;
+
+    do {
+        printf("\n--- MENU ---\n");
+        printf("1. Add Student\n");
+        printf("2. Show Students\n");
+        printf("3. Exit\n");
+        printf("Choose: ");
+        scanf("%d", &choice);
+
+        // validim menu
+        if (choice < 1 || choice > 3) {
+            printf("Invalid menu choice! Try again.\n");
+            continue;
+        }
+
+        switch(choice) {
+
+            case 1:
+                if (count >= MAX) {
+                    printf("List is full!\n");
+                    break;
+                }
+
+                printf("Enter name: ");
+                scanf("%s", students[count].name);
+
+                printf("Enter score: ");
+                scanf("%d", &students[count].score);
+
+                int statusChoice;
+                printf("Choose status:\n");
+                printf("1. LOW\n2. MEDIUM\n3. HIGH\n");
+                printf("Enter: ");
+                scanf("%d", &statusChoice);
+
+                // validim status
+                if (statusChoice < 1 || statusChoice > 3) {
+                    printf("Invalid status! Student not added.\n");
+                    break;
+                }
+
+                students[count].status = (enum Status)statusChoice;
+
+                count++;
+                printf("Student added successfully!\n");
+                break;
+
+            case 2:
+                if (count == 0) {
+                    printf("No students to show.\n");
+                    break;
+                }
+
+                for (int i = 0; i < count; i++) {
+                    printf("\nName: %s\n", students[i].name);
+                    printf("Score: %d\n", students[i].score);
+
+                    // switch për enum
+                    switch(students[i].status) {
+                        case LOW:
+                            printf("Status: LOW\n");
+                            break;
+                        case MEDIUM:
+                            printf("Status: MEDIUM\n");
+                            break;
+                        case HIGH:
+                            printf("Status: HIGH\n");
+                            break;
+                    }
+                }
+                break;
+
+        }
+
+    } while(choice != 3);
+
+    printf("Program ended.\n");
+    return 0;
+}

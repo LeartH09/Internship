@@ -1,0 +1,129 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_RECORDS 5
+
+struct ProgressRecord {
+    int id;
+    char name[50];
+    int completedTasks;
+    float averageScore;
+};
+
+void clearBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int readInt() {
+    int value;
+    while (scanf("%d", &value) != 1) {
+        printf("Input i pavlefshem. Shkruaj numer: ");
+        clearBuffer();
+    }
+    clearBuffer();
+    return value;
+}
+
+float readFloat() {
+    float value;
+    while (scanf("%f", &value) != 1) {
+        printf("Input i pavlefshem. Shkruaj numer: ");
+        clearBuffer();
+    }
+    clearBuffer();
+    return value;
+}
+
+void addRecord(struct ProgressRecord records[], int *count) {
+    if (*count >= MAX_RECORDS) {
+        printf("\nNuk mund te shtohen regjistrime te reja.\n");
+        printf("Kapaciteti maksimal prej %d eshte arritur.\n", MAX_RECORDS);
+        return;
+    }
+
+    struct ProgressRecord *r = &records[*count];
+
+    printf("\n--- Shto regjistrim te ri ---\n");
+
+    r->id = *count + 1;
+
+    printf("Emri i nxenesit: ");
+    fgets(r->name, sizeof(r->name), stdin);
+    r->name[strcspn(r->name, "\n")] = '\0';
+
+    printf("Numri i detyrave te perfunduara: ");
+    r->completedTasks = readInt();
+
+    printf("Piket mesatare: ");
+    r->averageScore = readFloat();
+
+    (*count)++;
+
+    printf("Regjistrimi u shtua me sukses.\n");
+    printf("Regjistrime aktuale: %d / %d\n", *count, MAX_RECORDS);
+}
+
+void showAllRecords(struct ProgressRecord records[], int count) {
+    int i;
+
+    if (count == 0) {
+        printf("\nNuk ka ende regjistrime te ruajtura.\n");
+        return;
+    }
+
+    printf("\n===== TE GJITHA REGJISTRIMET =====\n");
+
+    for (i = 0; i < count; i++) {
+        printf("\nRegjistrimi %d\n", i + 1);
+        printf("ID: %d\n", records[i].id);
+        printf("Emri: %s\n", records[i].name);
+        printf("Detyra te perfunduara: %d\n", records[i].completedTasks);
+        printf("Piket mesatare: %.2f\n", records[i].averageScore);
+        printf("----------------------------\n");
+    }
+}
+
+void showStatus(int count) {
+    printf("\n===== GJENDJA E PROGRAMIT =====\n");
+    printf("Regjistrime te ruajtura: %d\n", count);
+    printf("Kapaciteti maksimal: %d\n", MAX_RECORDS);
+    printf("Hapesire e lire: %d\n", MAX_RECORDS - count);
+}
+
+int main() {
+    struct ProgressRecord records[MAX_RECORDS];
+    int currentCount = 0;
+    int choice;
+
+    do {
+        printf("\n========== MENU ==========\n");
+        printf("1. Shto regjistrim\n");
+        printf("2. Shfaq te gjitha regjistrimet\n");
+        printf("3. Shfaq gjendjen e programit\n");
+        printf("4. Dil\n");
+        printf("Zgjedh opsionin: ");
+
+        choice = readInt();
+
+        switch (choice) {
+            case 1:
+                addRecord(records, &currentCount);
+                break;
+            case 2:
+                showAllRecords(records, currentCount);
+                break;
+            case 3:
+                showStatus(currentCount);
+                break;
+            case 4:
+                printf("\nProgrami u mbyll.\n");
+                break;
+            default:
+                printf("\nOpsion i pavlefshem. Provo perseri.\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}

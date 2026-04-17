@@ -1,0 +1,159 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 5
+
+enum Status {
+    NOT_STARTED = 1,
+    IN_PROGRESS,
+    COMPLETED
+};
+
+struct StudentProgress {
+    int id;
+    char name[50];
+    float progress;
+    enum Status status;
+};
+
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+const char* getStatusText(enum Status status) {
+    switch (status) {
+        case NOT_STARTED:
+            return "Not Started";
+        case IN_PROGRESS:
+            return "In Progress";
+        case COMPLETED:
+            return "Completed";
+        default:
+            return "Unknown";
+    }
+}
+
+void showStudents(struct StudentProgress students[], int count) {
+    int i;
+    printf("\n--- Student Records ---\n");
+    for (i = 0; i < count; i++) {
+        printf("ID: %d | Name: %s | Progress: %.2f%% | Status: %s\n",
+               students[i].id,
+               students[i].name,
+               students[i].progress,
+               getStatusText(students[i].status));
+    }
+}
+
+int findStudentById(struct StudentProgress students[], int count, int searchId) {
+    int i;
+    for (i = 0; i < count; i++) {
+        if (students[i].id == searchId) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void updateProgressAndStatus(float *progress, enum Status *status) {
+    float newProgress;
+
+    printf("Enter new progress (0 - 100): ");
+    scanf("%f", &newProgress);
+
+    if (newProgress < 0 || newProgress > 100) {
+        printf("Invalid progress value. Update cancelled.\n");
+        return;
+    }
+
+    printf("\nBefore update:\n");
+    printf("Progress value: %.2f\n", *progress);
+    printf("Progress address: %p\n", (void*)progress);
+    printf("Status value: %d\n", *status);
+    printf("Status address: %p\n", (void*)status);
+
+    *progress = newProgress;
+
+    if (*progress == 100) {
+        *status = COMPLETED;
+    } else if (*progress > 0) {
+        *status = IN_PROGRESS;
+    } else {
+        *status = NOT_STARTED;
+    }
+
+    printf("\nAfter update:\n");
+    printf("Progress value: %.2f\n", *progress);
+    printf("Progress address: %p\n", (void*)progress);
+    printf("Status value: %d\n", *status);
+    printf("Status address: %p\n", (void*)status);
+
+    printf("Record updated successfully through pointers.\n");
+}
+
+int main() {
+    struct StudentProgress students[MAX] = {
+        {1, "Ledi", 20.0, IN_PROGRESS},
+        {2, "Arta", 0.0, NOT_STARTED},
+        {3, "Besa", 100.0, COMPLETED},
+        {4, "Dren", 55.5, IN_PROGRESS},
+        {5, "Era", 10.0, IN_PROGRESS}
+    };
+
+    int choice;
+    int id;
+    int index;
+
+    do {
+        printf("\n===== Student Progress Tracker =====\n");
+        printf("1. Show all records\n");
+        printf("2. Update student progress using pointers\n");
+        printf("3. Exit\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                showStudents(students, MAX);
+                break;
+
+            case 2:
+                printf("Enter student ID to update: ");
+                scanf("%d", &id);
+
+                index = findStudentById(students, MAX, id);
+
+                if (index == -1) {
+                    printf("Student not found.\n");
+                } else {
+                    printf("\nSelected record:\n");
+                    printf("ID: %d | Name: %s | Progress: %.2f%% | Status: %s\n",
+                           students[index].id,
+                           students[index].name,
+                           students[index].progress,
+                           getStatusText(students[index].status));
+
+                    updateProgressAndStatus(&students[index].progress, &students[index].status);
+
+                    printf("\nUpdated record:\n");
+                    printf("ID: %d | Name: %s | Progress: %.2f%% | Status: %s\n",
+                           students[index].id,
+                           students[index].name,
+                           students[index].progress,
+                           getStatusText(students[index].status));
+                }
+                break;
+
+            case 3:
+                printf("Program closed.\n");
+                break;
+
+            default:
+                printf("Invalid option. Try again.\n");
+        }
+
+    } while (choice != 3);
+
+    return 0;
+}

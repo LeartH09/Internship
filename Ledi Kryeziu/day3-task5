@@ -1,0 +1,54 @@
+#include <stdio.h>
+
+// Enum për statusin e detyrës
+enum TaskStatus {
+    NOT_STARTED = 1,
+    IN_PROGRESS,
+    COMPLETED,
+    LATE
+};
+
+int main() {
+    int choice;
+    int valid = 0;
+    int invalid = 0;
+
+    // Loop për 3 përdorues/teste
+    for(int i = 1; i <= 3; i++) {
+        printf("\nRasti %d:\n", i);
+        printf("Zgjidh statusin (1-Not Started, 2-In Progress, 3-Completed, 4-Late): ");
+        scanf("%d", &choice);
+
+        // Kontroll inputi
+        if(choice < 1 || choice > 4) {
+            printf("Input i pavlefshem!\n");
+            invalid++;
+            continue;
+        }
+
+        valid++;
+
+        // Switch me enum
+        switch(choice) {
+            case NOT_STARTED:
+                printf("Detyra ende nuk ka filluar.\n");
+                break;
+            case IN_PROGRESS:
+                printf("Detyra eshte duke u punuar.\n");
+                break;
+            case COMPLETED:
+                printf("Detyra eshte perfunduar me sukses.\n");
+                break;
+            case LATE:
+                printf("Detyra eshte dorezuar me vonese.\n");
+                break;
+        }
+    }
+
+    // Statistikat
+    printf("\n--- Statistikat ---\n");
+    printf("Zgjedhje valide: %d\n", valid);
+    printf("Zgjedhje te pavlefshme: %d\n", invalid);
+
+    return 0;
+}

@@ -1,0 +1,57 @@
+#include <stdio.h>
+
+int main() {
+    int age, workshopOption;
+    char initial;
+    double score;
+
+    printf("Enter age: ");
+    scanf("%d", &age);
+
+    printf("Enter initial: ");
+    scanf(" %c", &initial);
+
+    printf("Enter previous score: ");
+    scanf("%lf", &score);
+
+    printf("Choose workshop (1, 2 or 3): ");
+    scanf("%d", &workshopOption);
+
+    printf("\n===== Result Summary =====\n");
+
+    printf("Age: %d\n", age);
+    printf("Initial: %c\n", initial);
+    printf("Previous Score: %.2lf\n", score);
+
+    if (age >= 14 && age <= 25) {
+        printf("Participation: Allowed\n");
+    } else {
+        printf("Participation: Not allowed\n");
+    }
+
+    if (score >= 0 && score < 50) {
+        printf("Level: Needs more practice\n");
+    } else if (score >= 50 && score < 80) {
+        printf("Level: Ready to continue\n");
+    } else if (score >= 80 && score <= 100) {
+        printf("Level: Ready for challenge\n");
+    } else {
+        printf("Level: Invalid score\n");
+    }
+
+    switch (workshopOption) {
+        case 1:
+            printf("Workshop: Programming Basics\n");
+            break;
+        case 2:
+            printf("Workshop: Web Development\n");
+            break;
+        case 3:
+            printf("Workshop: Problem Solving\n");
+            break;
+        default:
+            printf("Workshop: Invalid option\n");
+    }
+
+    return 0;
+}

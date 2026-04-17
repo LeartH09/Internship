@@ -1,0 +1,241 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+enum Status {
+    NOT_STARTED = 1,
+    IN_PROGRESS,
+    COMPLETED
+};
+
+struct StudentProgress {
+    int id;
+    char name[50];
+    int score;
+    enum Status status;
+};
+
+void showStatus(enum Status status) {
+    switch (status) {
+        case NOT_STARTED:
+            printf("Not Started");
+            break;
+        case IN_PROGRESS:
+            printf("In Progress");
+            break;
+        case COMPLETED:
+            printf("Completed");
+            break;
+        default:
+            printf("Unknown");
+    }
+}
+
+void showRecommendation(struct StudentProgress s) {
+    printf("System Message: ");
+
+    if (s.score < 50 && s.status == NOT_STARTED) {
+        printf("Warning - very low score and the work has not started yet.\n");
+    } 
+    else if (s.score < 50 && s.status == IN_PROGRESS) {
+        printf("Warning - low score. The student needs support and closer follow-up.\n");
+    } 
+    else if (s.score >= 50 && s.score < 70 && s.status == NOT_STARTED) {
+        printf("Recommendation - acceptable score, but the task should be started soon.\n");
+    } 
+    else if (s.score >= 50 && s.score < 70 && s.status == IN_PROGRESS) {
+        printf("Recommendation - average progress. More effort is needed to improve.\n");
+    } 
+    else if (s.score >= 70 && s.status == IN_PROGRESS) {
+        printf("Good sign - strong score and the work is moving forward.\n");
+    } 
+    else if (s.score >= 70 && s.status == COMPLETED) {
+        printf("Excellent - high score and completed work.\n");
+    } 
+    else if (s.score < 70 && s.status == COMPLETED) {
+        printf("Completed, but the result could still be improved.\n");
+    } 
+    else {
+        printf("This record is stored correctly and does not show a major warning.\n");
+    }
+}
+
+int main() {
+    struct StudentProgress records[MAX];
+    int count = 0;
+    int choice;
+
+    do {
+        printf("\n===== STUDENT PROGRESS TRACKER =====\n");
+        printf("1. Add Record\n");
+        printf("2. Show Records\n");
+        printf("3. Show Report\n");
+        printf("4. Search Record by Name\n");
+        printf("5. Exit\n");
+        printf("Choose an option: ");
+        scanf("%d", &choice);
+
+        if (choice < 1 || choice > 5) {
+            printf("Invalid menu choice. Please try again.\n");
+            continue;
+        }
+
+        switch (choice) {
+            case 1: {
+                if (count >= MAX) {
+                    printf("The list is full. You cannot add more records.\n");
+                    break;
+                }
+
+                int statusChoice;
+
+                printf("Enter ID: ");
+                scanf("%d", &records[count].id);
+
+                printf("Enter student name: ");
+                scanf("%s", records[count].name);
+
+                printf("Enter score (0-100): ");
+                scanf("%d", &records[count].score);
+
+                if (records[count].score < 0 || records[count].score > 100) {
+                    printf("Invalid score. Record was not added.\n");
+                    break;
+                }
+
+                printf("Choose status:\n");
+                printf("1. Not Started\n");
+                printf("2. In Progress\n");
+                printf("3. Completed\n");
+                printf("Enter status choice: ");
+                scanf("%d", &statusChoice);
+
+                if (statusChoice < 1 || statusChoice > 3) {
+                    printf("Invalid status. Record was not added.\n");
+                    break;
+                }
+
+                records[count].status = (enum Status)statusChoice;
+                count++;
+
+                printf("Record added successfully.\n");
+                break;
+            }
+
+            case 2: {
+                if (count == 0) {
+                    printf("No records stored yet.\n");
+                    break;
+                }
+
+                printf("\n----- STORED RECORDS -----\n");
+                for (int i = 0; i < count; i++) {
+                    printf("Record %d\n", i + 1);
+                    printf("ID: %d\n", records[i].id);
+                    printf("Name: %s\n", records[i].name);
+                    printf("Score: %d\n", records[i].score);
+                    printf("Status: ");
+                    showStatus(records[i].status);
+                    printf("\n\n");
+                }
+                break;
+            }
+
+            case 3: {
+                if (count == 0) {
+                    printf("No records available for analysis.\n");
+                    break;
+                }
+
+                int completedCount = 0;
+                int totalScore = 0;
+                int highestScore = records[0].score;
+                int lowestScore = records[0].score;
+                double averageScore;
+
+                for (int i = 0; i < count; i++) {
+                    totalScore += records[i].score;
+
+                    if (records[i].status == COMPLETED) {
+                        completedCount++;
+                    }
+
+                    if (records[i].score > highestScore) {
+                        highestScore = records[i].score;
+                    }
+
+                    if (records[i].score < lowestScore) {
+                        lowestScore = records[i].score;
+                    }
+                }
+
+                averageScore = (double)totalScore / count;
+
+                printf("\n===== ANALYTICAL REPORT =====\n");
+                printf("Total records: %d\n", count);
+                printf("Completed records: %d\n", completedCount);
+                printf("Average score: %.2lf\n", averageScore);
+                printf("Highest score: %d\n", highestScore);
+                printf("Lowest score: %d\n", lowestScore);
+
+                printf("\nPerformance Message: ");
+                if (averageScore >= 85) {
+                    printf("Excellent overall progress.\n");
+                } else if (averageScore >= 70) {
+                    printf("Good overall progress.\n");
+                } else if (averageScore >= 50) {
+                    printf("Average progress. More improvement is needed.\n");
+                } else {
+                    printf("Low progress. Stronger effort is needed.\n");
+                }
+
+                break;
+            }
+
+            case 4: {
+                if (count == 0) {
+                    printf("No records available to search.\n");
+                    break;
+                }
+
+                char searchName[50];
+                int found = 0;
+
+                printf("Enter student name to search: ");
+                scanf("%s", searchName);
+
+                printf("\n===== SEARCH RESULT =====\n");
+
+                for (int i = 0; i < count; i++) {
+                    if (strcmp(records[i].name, searchName) == 0) {
+                        found = 1;
+
+                        printf("ID: %d\n", records[i].id);
+                        printf("Name: %s\n", records[i].name);
+                        printf("Score: %d\n", records[i].score);
+                        printf("Status: ");
+                        showStatus(records[i].status);
+                        printf("\n");
+
+                        showRecommendation(records[i]);
+                        printf("\n");
+                    }
+                }
+
+                if (!found) {
+                    printf("No matching record was found for the given name.\n");
+                }
+
+                break;
+            }
+
+            case 5:
+                printf("Exiting program...\n");
+                break;
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
