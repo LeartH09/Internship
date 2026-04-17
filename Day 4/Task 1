@@ -1,74 +1,73 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX 5  
+#define MAX 5
 
-struct Record {
+struct Student {
+    int id;
     char name[50];
-    int age;
     double progress;
 };
 
 int main() {
 
-    struct Record records[MAX];
-    int count = 0;  // sa regjistrime kemi
+    struct Student students[MAX] = {
+        {1, "Ardi", 75.5},
+        {2, "Luan", 60.0},
+        {3, "Era", 40.0}
+    };
+
+    int count = 3;
     int choice;
 
     while(1) {
         printf("\n--- MENU ---\n");
-        printf("1. Add Record\n");
-        printf("2. Show All Records\n");
+        printf("1. Add Student\n");
+        printf("2. Show Students\n");
         printf("3. Exit\n");
         printf("Choice: ");
         scanf("%d", &choice);
 
-        if(choice == 1) {
-            // kontroll kufiri
-            if(count >= MAX) {
-                printf("Maximum capacity reached! Cannot add more records.\n");
-                continue;
-            }
+        switch(choice) {
 
-            printf("\nEnter name: ");
-            scanf("%s", records[count].name);
+            case 1:
+                if(count >= MAX) {
+                    printf("Max limit reached!\n");
+                    break;
+                }
 
-            printf("Enter age: ");
-            scanf("%d", &records[count].age);
+                printf("Enter ID: ");
+                scanf("%d", &students[count].id);
 
-            printf("Enter progress (0-100): ");
-            scanf("%lf", &records[count].progress);
+                printf("Enter Name: ");
+                scanf("%s", students[count].name);
 
-            count++;
-            printf("Record added successfully!\n");
-        }
+                printf("Enter Progress: ");
+                scanf("%lf", &students[count].progress);
 
-        else if(choice == 2) {
-            if(count == 0) {
-                printf("No records available.\n");
-                continue;
-            }
+                count++;
+                printf("Student added!\n");
+                break;
 
-            printf("\n--- ALL RECORDS ---\n");
-            for(int i = 0; i < count; i++) {
-                printf("\nRecord %d:\n", i + 1);
-                printf("Name: %s\n", records[i].name);
-                printf("Age: %d\n", records[i].age);
-                printf("Progress: %.2lf\n", records[i].progress);
-            }
+            case 2:
+                if(count == 0) {
+                    printf("No data!\n");
+                    break;
+                }
 
-            printf("\nTotal records: %d / %d\n", count, MAX);
-        }
+                for(int i = 0; i < count; i++) {
+                    printf("\nStudent %d\n", i+1);
+                    printf("ID: %d\n", students[i].id);
+                    printf("Name: %s\n", students[i].name);
+                    printf("Progress: %.2lf\n", students[i].progress);
+                }
+                break;
 
-        else if(choice == 3) {
-            printf("Exiting program...\n");
-            break;
-        }
+            case 3:
+                return 0;
 
-        else {
-            printf("Invalid choice!\n");
+            default:
+                printf("Invalid choice!\n");
         }
     }
-
-    return 0;
 }
