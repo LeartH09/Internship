@@ -1,0 +1,457 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 100
+
+typedef enum {
+    NOT_STARTED = 1,
+    IN_PROGRESS,
+    COMPLETED
+} Status;
+
+typedef struct {
+    int id;
+    char name[50];
+    int progress;
+    float score;
+    Status status;
+} Student;
+
+Student students[MAX];
+int count = 0;
+
+void clearInputBuffer() {
+    while (getchar() != '\n');
+}
+
+const char* getStatusText(Status status) {
+    switch (status) {
+        case NOT_STARTED: return "Not Started";
+        case IN_PROGRESS: return "In Progress";
+        case COMPLETED: return "Completed";
+        default: return "Unknown";
+    }
+}
+
+void printLine() {
+    printf("------------------------------------------------------------\n");
+}
+
+void showMenu() {
+    printLine();
+    printf("        STUDENT PROGRESS TRACKER - FINAL VERSION\n");
+    printLine();
+    printf("1. Add student record\n");
+    printf("2. Show all records\n");
+    printf("3. Show analytics report\n");
+    printf("4. Search student by ID\n");
+    printf("5. Search student by name\n");
+    printf("6. Update progress using pointer\n");
+    printf("7. Sort and show ranking by progress\n");
+    printf("0. Exit\n");
+    printLine();
+    printf("Choose an option: ");
+}
+
+int isDuplicateID(int id) {
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+Status chooseStatus() {
+    int choice;
+
+    while (1) {
+        printf("Choose status:\n");
+        printf("1. Not Started\n");
+        printf("2. In Progress\n");
+        printf("3. Completed\n");
+        printf("Enter choice: ");
+
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Please enter a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        switch (choice) {
+            case 1: return NOT_STARTED;
+            case 2: return IN_PROGRESS;
+            case 3: return COMPLETED;
+            default:
+                printf("Invalid status choice. Try again.\n");
+        }
+    }
+}
+
+void addStudent() {
+    if (count >= MAX) {
+        printf("Storage is full. Cannot add more records.\n");
+        return;
+    }
+
+    int id;
+    int progress;
+    float score;
+
+    printLine();
+    printf("ADD NEW STUDENT RECORD\n");
+    printLine();
+
+    while (1) {
+        printf("Enter ID: ");
+        if (scanf("%d", &id) != 1) {
+            printf("Invalid input. ID must be a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        if (id <= 0) {
+            printf("ID must be greater than 0.\n");
+            continue;
+        }
+
+        if (isDuplicateID(id)) {
+            printf("This ID already exists. Enter another one.\n");
+            continue;
+        }
+
+        break;
+    }
+
+    clearInputBuffer();
+
+    printf("Enter student name: ");
+    fgets(students[count].name, sizeof(students[count].name), stdin);
+    students[count].name[strcspn(students[count].name, "\n")] = '\0';
+
+    while (1) {
+        printf("Enter progress (0-100): ");
+        if (scanf("%d", &progress) != 1) {
+            printf("Invalid input. Progress must be a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        if (progress < 0 || progress > 100) {
+            printf("Progress must be between 0 and 100.\n");
+            continue;
+        }
+
+        break;
+    }
+
+    while (1) {
+        printf("Enter score (0.0 - 100.0): ");
+        if (scanf("%f", &score) != 1) {
+            printf("Invalid input. Score must be a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        if (score < 0 || score > 100) {
+            printf("Score must be between 0 and 100.\n");
+            continue;
+        }
+
+        break;
+    }
+
+    students[count].id = id;
+    students[count].progress = progress;
+    students[count].score = score;
+    students[count].status = chooseStatus();
+
+    count++;
+    printf("Student record added successfully.\n");
+}
+
+void showAllStudents() {
+    if (count == 0) {
+        printf("No records available.\n");
+        return;
+    }
+
+    printLine();
+    printf("ALL STUDENT RECORDS\n");
+    printLine();
+
+    for (int i = 0; i < count; i++) {
+        printf("Record #%d\n", i + 1);
+        printf("ID       : %d\n", students[i].id);
+        printf("Name     : %s\n", students[i].name);
+        printf("Progress : %d%%\n", students[i].progress);
+        printf("Score    : %.2f\n", students[i].score);
+        printf("Status   : %s\n", getStatusText(students[i].status));
+        printLine();
+    }
+}
+
+void analyticsReport() {
+    if (count == 0) {
+        printf("No data available for analytics.\n");
+        return;
+    }
+
+    int completedCount = 0;
+    int highestProgress = students[0].progress;
+    int lowestProgress = students[0].progress;
+    int totalProgress = 0;
+    float totalScore = 0;
+
+    for (int i = 0; i < count; i++) {
+        totalProgress += students[i].progress;
+        totalScore += students[i].score;
+
+        if (students[i].status == COMPLETED) {
+            completedCount++;
+        }
+
+        if (students[i].progress > highestProgress) {
+            highestProgress = students[i].progress;
+        }
+
+        if (students[i].progress < lowestProgress) {
+            lowestProgress = students[i].progress;
+        }
+    }
+
+    printLine();
+    printf("ANALYTICS REPORT\n");
+    printLine();
+    printf("Total records       : %d\n", count);
+    printf("Completed students  : %d\n", completedCount);
+    printf("Average progress    : %.2f%%\n", (float)totalProgress / count);
+    printf("Average score       : %.2f\n", totalScore / count);
+    printf("Highest progress    : %d%%\n", highestProgress);
+    printf("Lowest progress     : %d%%\n", lowestProgress);
+
+    if ((float)totalProgress / count >= 70) {
+        printf("Overall result      : Good overall progress.\n");
+    } else {
+        printf("Overall result      : Progress needs improvement.\n");
+    }
+
+    printLine();
+}
+
+int findStudentByID(int id) {
+    for (int i = 0; i < count; i++) {
+        if (students[i].id == id) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+void searchByID() {
+    int id;
+    printf("Enter student ID to search: ");
+
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid input.\n");
+        clearInputBuffer();
+        return;
+    }
+
+    int index = findStudentByID(id);
+
+    if (index == -1) {
+        printf("No student found with that ID.\n");
+    } else {
+        printLine();
+        printf("STUDENT FOUND\n");
+        printLine();
+        printf("ID       : %d\n", students[index].id);
+        printf("Name     : %s\n", students[index].name);
+        printf("Progress : %d%%\n", students[index].progress);
+        printf("Score    : %.2f\n", students[index].score);
+        printf("Status   : %s\n", getStatusText(students[index].status));
+
+        if (students[index].progress < 40 && students[index].score < 50) {
+            printf("Message  : Warning - low progress and low score.\n");
+        } else if (students[index].progress >= 80 && students[index].score >= 80) {
+            printf("Message  : Excellent performance.\n");
+        } else {
+            printf("Message  : Student is progressing normally.\n");
+        }
+        printLine();
+    }
+}
+
+void searchByName() {
+    char keyword[50];
+    int found = 0;
+
+    clearInputBuffer();
+    printf("Enter student name to search: ");
+    fgets(keyword, sizeof(keyword), stdin);
+    keyword[strcspn(keyword, "\n")] = '\0';
+
+    printLine();
+    printf("SEARCH RESULTS\n");
+    printLine();
+
+    for (int i = 0; i < count; i++) {
+        if (strstr(students[i].name, keyword) != NULL) {
+            printf("ID       : %d\n", students[i].id);
+            printf("Name     : %s\n", students[i].name);
+            printf("Progress : %d%%\n", students[i].progress);
+            printf("Score    : %.2f\n", students[i].score);
+            printf("Status   : %s\n", getStatusText(students[i].status));
+
+            if (students[i].progress < 40 && students[i].score < 50) {
+                printf("Message  : Warning - extra support recommended.\n");
+            } else if (students[i].progress >= 80 && students[i].score >= 80) {
+                printf("Message  : Very strong result.\n");
+            } else {
+                printf("Message  : Acceptable progress.\n");
+            }
+
+            printLine();
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("No matching student found.\n");
+    }
+}
+
+void updateProgressPointer(int *progress) {
+    int newProgress;
+
+    while (1) {
+        printf("Enter new progress (0-100): ");
+        if (scanf("%d", &newProgress) != 1) {
+            printf("Invalid input. Please enter a number.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        if (newProgress < 0 || newProgress > 100) {
+            printf("Progress must be between 0 and 100.\n");
+            continue;
+        }
+
+        *progress = newProgress;
+        break;
+    }
+}
+
+void updateStudentProgress() {
+    int id;
+    printf("Enter student ID to update progress: ");
+
+    if (scanf("%d", &id) != 1) {
+        printf("Invalid input.\n");
+        clearInputBuffer();
+        return;
+    }
+
+    int index = findStudentByID(id);
+
+    if (index == -1) {
+        printf("Student not found.\n");
+        return;
+    }
+
+    printf("Old progress for %s: %d%%\n", students[index].name, students[index].progress);
+    updateProgressPointer(&students[index].progress);
+    printf("New progress for %s: %d%%\n", students[index].name, students[index].progress);
+
+    if (students[index].progress == 100) {
+        students[index].status = COMPLETED;
+    } else if (students[index].progress > 0) {
+        students[index].status = IN_PROGRESS;
+    } else {
+        students[index].status = NOT_STARTED;
+    }
+
+    printf("Status updated to: %s\n", getStatusText(students[index].status));
+}
+
+void sortByProgressDescending() {
+    if (count == 0) {
+        printf("No records available to sort.\n");
+        return;
+    }
+
+    Student temp;
+
+    for (int i = 0; i < count - 1; i++) {
+        for (int j = 0; j < count - i - 1; j++) {
+            if (students[j].progress < students[j + 1].progress) {
+                temp = students[j];
+                students[j] = students[j + 1];
+                students[j + 1] = temp;
+            }
+        }
+    }
+
+    printLine();
+    printf("FINAL RANKING BY PROGRESS\n");
+    printLine();
+
+    for (int i = 0; i < count; i++) {
+        printf("%d. %s | ID: %d | Progress: %d%% | Score: %.2f | Status: %s\n",
+               i + 1,
+               students[i].name,
+               students[i].id,
+               students[i].progress,
+               students[i].score,
+               getStatusText(students[i].status));
+    }
+
+    printLine();
+}
+
+int main() {
+    int choice;
+
+    do {
+        showMenu();
+
+        if (scanf("%d", &choice) != 1) {
+            printf("Invalid input. Please enter a number from the menu.\n");
+            clearInputBuffer();
+            continue;
+        }
+
+        switch (choice) {
+            case 1:
+                addStudent();
+                break;
+            case 2:
+                showAllStudents();
+                break;
+            case 3:
+                analyticsReport();
+                break;
+            case 4:
+                searchByID();
+                break;
+            case 5:
+                searchByName();
+                break;
+            case 6:
+                updateStudentProgress();
+                break;
+            case 7:
+                sortByProgressDescending();
+                break;
+            case 0:
+                printf("Exiting program. Final version saved successfully.\n");
+                break;
+            default:
+                printf("Invalid menu option. Please try again.\n");
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
