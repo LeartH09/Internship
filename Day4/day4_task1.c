@@ -1,3 +1,4 @@
+#include <stdio.h>
 #define MAX_STUDENTS 10 // Kufiri maksimal i regjistrimeve
 
 enum Status { START = 1, IN_PROGRESS, COMPLETED };
