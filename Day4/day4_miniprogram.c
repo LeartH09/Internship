@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <string.h>
 // 1. Përdorimi i enum për Statusin e Studentit
 enum Status 
 {
