@@ -1,3 +1,4 @@
+#include <stdio.h>
 #define MAX_STUDENTS 5
 
 // 1. Enum i qartë për kategoritë e progresit
