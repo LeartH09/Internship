@@ -1,0 +1,98 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 5
+
+enum Status {
+    LOW = 1,
+    MEDIUM,
+    HIGH
+};
+
+struct Student {
+    int id;
+    char name[50];
+    double progress;
+    enum Status status;
+};
+
+void setStatus(struct Student *s) {
+    if(s->progress < 40) {
+        s->status = LOW;
+    } else if(s->progress < 70) {
+        s->status = MEDIUM;
+    } else {
+        s->status = HIGH;
+    }
+}
+
+int main() {
+
+    struct Student students[MAX];
+    int count = 0;
+    int choice;
+
+    while(1) {
+        printf("\n--- STUDENT PROGRESS TRACKER ---\n");
+        printf("1. Add Student\n");
+        printf("2. Show Students\n");
+        printf("3. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        switch(choice) {
+
+            case 1:
+                if(count >= MAX) {
+                    printf("Max limit reached!\n");
+                    break;
+                }
+
+                printf("Enter ID: ");
+                scanf("%d", &students[count].id);
+
+                printf("Enter Name: ");
+                scanf("%s", students[count].name);
+
+                printf("Enter Progress (0-100): ");
+                scanf("%lf", &students[count].progress);
+
+                setStatus(&students[count]);
+
+                count++;
+                printf("Student added successfully!\n");
+                break;
+
+            case 2:
+                if(count == 0) {
+                    printf("No data available.\n");
+                    break;
+                }
+
+                for(int i = 0; i < count; i++) {
+                    printf("\nStudent %d\n", i+1);
+                    printf("ID: %d\n", students[i].id);
+                    printf("Name: %s\n", students[i].name);
+                    printf("Progress: %.2lf\n", students[i].progress);
+
+
+                    if(students[i].status == LOW)
+                        printf("Status: LOW\n");
+                    else if(students[i].status == MEDIUM)
+                        printf("Status: MEDIUM\n");
+                    else
+                        printf("Status: HIGH\n");
+                }
+                break;
+
+            case 3:
+                printf("Exiting...\n");
+                return 0;
+
+            default:
+                printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
