@@ -1,0 +1,252 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 10
+
+enum Status {
+    LOW = 1,
+    MEDIUM,
+    HIGH
+};
+
+struct Student {
+    int id;
+    char name[50];
+    double progress;
+    enum Status status;
+};
+
+
+void setStatus(struct Student *s) {
+    if(s->progress < 40) s->status = LOW;
+    else if(s->progress < 70) s->status = MEDIUM;
+    else s->status = HIGH;
+}
+
+const char* getStatusText(enum Status s) {
+    switch(s) {
+        case LOW: return "LOW";
+        case MEDIUM: return "MEDIUM";
+        case HIGH: return "HIGH";
+        default: return "UNKNOWN";
+    }
+}
+
+
+void printStudent(struct Student s) {
+    printf("ID: %d | Name: %-10s | Progress: %6.2lf | Status: %s\n",
+           s.id, s.name, s.progress, getStatusText(s.status));
+}
+
+void showAll(struct Student s[], int count) {
+    printf("\n====== STUDENTS LIST ======\n");
+    if(count == 0) {
+        printf("No data available.\n");
+        return;
+    }
+
+    for(int i = 0; i < count; i++) {
+        printStudent(s[i]);
+    }
+}
+
+
+void addStudent(struct Student s[], int *count) {
+    if(*count >= MAX) {
+        printf("Max limit reached!\n");
+        return;
+    }
+
+    printf("\n--- ADD STUDENT ---\n");
+
+    printf("ID: ");
+    scanf("%d", &s[*count].id);
+
+    printf("Name: ");
+    scanf("%s", s[*count].name);
+
+    printf("Progress: ");
+    scanf("%lf", &s[*count].progress);
+
+    setStatus(&s[*count]);
+    (*count)++;
+
+    printf("✔ Student added!\n");
+}
+
+
+void updateStudent(struct Student s[], int count) {
+    int id;
+    printf("Enter ID to update: ");
+    scanf("%d", &id);
+
+    for(int i = 0; i < count; i++) {
+        if(s[i].id == id) {
+
+            printf("New Name: ");
+            scanf("%s", s[i].name);
+
+            printf("New Progress: ");
+            scanf("%lf", &s[i].progress);
+
+            setStatus(&s[i]);
+
+            printf("✔ Updated successfully!\n");
+            return;
+        }
+    }
+
+    printf("Student not found!\n");
+}
+
+
+void deleteStudent(struct Student s[], int *count) {
+    int id;
+    printf("Enter ID to delete: ");
+    scanf("%d", &id);
+
+    int index = -1;
+
+    for(int i = 0; i < *count; i++) {
+        if(s[i].id == id) {
+            index = i;
+            break;
+        }
+    }
+
+    if(index == -1) {
+        printf("Student not found!\n");
+        return;
+    }
+
+    for(int i = index; i < *count - 1; i++) {
+        s[i] = s[i + 1];
+    }
+
+    (*count)--;
+    printf("✔ Deleted successfully!\n");
+}
+
+
+void searchStudent(struct Student s[], int count) {
+    int id;
+    printf("Enter ID to search: ");
+    scanf("%d", &id);
+
+    for(int i = 0; i < count; i++) {
+        if(s[i].id == id) {
+
+            printf("\n--- FOUND ---\n");
+            printStudent(s[i]);
+
+            if(s[i].progress < 40)
+                printf("⚠ Warning: Low performance\n");
+            else if(s[i].progress < 70)
+                printf("Note: Needs improvement\n");
+            else
+                printf("Good performance\n");
+
+            return;
+        }
+    }
+
+    printf("No match found!\n");
+}
+
+
+void report(struct Student s[], int count) {
+
+    if(count == 0) {
+        printf("No data!\n");
+        return;
+    }
+
+    int low=0, med=0, high=0;
+    double sum=0;
+
+    for(int i=0;i<count;i++) {
+        sum += s[i].progress;
+
+        if(s[i].progress < 40) low++;
+        else if(s[i].progress < 70) med++;
+        else high++;
+    }
+
+    printf("\n====== REPORT ======\n");
+    printf("Total: %d\n", count);
+    printf("LOW: %d | MEDIUM: %d | HIGH: %d\n", low, med, high);
+    printf("Average: %.2lf\n", sum/count);
+}
+
+// --------- RANKING ---------
+
+void ranking(struct Student s[], int count) {
+
+    struct Student temp;
+
+    for(int i=0;i<count-1;i++) {
+        for(int j=0;j<count-1-i;j++) {
+            if(s[j].progress < s[j+1].progress) {
+                temp = s[j];
+                s[j] = s[j+1];
+                s[j+1] = temp;
+            }
+        }
+    }
+
+    printf("\n====== RANKING ======\n");
+    for(int i=0;i<count;i++) {
+        printf("%d. %s (%.2lf)\n", i+1, s[i].name, s[i].progress);
+    }
+}
+
+// --------- MENU ---------
+
+void menu() {
+    printf("\n=========== MENU ===========\n");
+    printf("1. Add Student\n");
+    printf("2. Show Students\n");
+    printf("3. Update Student\n");
+    printf("4. Delete Student\n");
+    printf("5. Search Student\n");
+    printf("6. Report\n");
+    printf("7. Ranking\n");
+    printf("8. Exit\n");
+    printf("============================\n");
+    printf("Choice: ");
+}
+
+// --------- MAIN ---------
+
+int main() {
+
+    struct Student s[MAX] = {
+        {1,"Ardi",75.5,HIGH},
+        {2,"Luan",60.0,MEDIUM},
+        {3,"Era",35.0,LOW},
+        {4,"Sara",90.0,HIGH}
+    };
+
+    int count = 4;
+    int choice;
+
+    while(1) {
+
+        menu();
+        scanf("%d", &choice);
+
+        switch(choice) {
+
+            case 1: addStudent(s, &count); break;
+            case 2: showAll(s, count); break;
+            case 3: updateStudent(s, count); break;
+            case 4: deleteStudent(s, &count); break;
+            case 5: searchStudent(s, count); break;
+            case 6: report(s, count); break;
+            case 7: ranking(s, count); break;
+            case 8: return 0;
+
+            default: printf("Invalid choice!\n");
+        }
+    }
+}
