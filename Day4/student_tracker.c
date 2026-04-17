@@ -1,25 +1,25 @@
 #include <stdio.h>
 #include <string.h>
 
-#define MAX_STUDENTS 10
+#define MAX_STUDENTS 5
 
-// 1. Enum per statusin e nxenesit (Kerkese e Dites 4)
-enum Status { AKTIV, I_DIPLOMUAR, NE_REVIZION, I_SUSPENDUAR };
+// 1. ENUM: Kategorizimi i sakte i progresit (Roli praktik)
+enum Progresi { SHKELQYESHEM = 1, MIRE, MBIFILLIM, DOBET };
 
-// 2. Struktura per te mbajtur te dhenat e organizuara
 struct Nxenesi {
     int id;
     char emri[50];
     float nota;
-    enum Status statusi;
+    enum Progresi statusi;
 };
 
-// 3. Funksion me Pointer (Kerkese praktike e Dites 4)
-// Ky funksion perditeson noten duke perdorur pointer per efikasitet
-void shtoBonus(float *notaPtr, float bonusi) {
-    if (notaPtr != NULL) {
-        *notaPtr += bonusi;
-        if (*notaPtr > 10.0) *notaPtr = 10.0; // Limiti i notes
+// 2. POINTER: Funksion praktik per perditesimin e notes
+void perditesoNoten(float *notaVjeter, float notaRe) {
+    if (notaRe >= 1.0 && notaRe <= 10.0) {
+        *notaVjeter = notaRe;
+        printf("-> Nota u perditesua me sukses permes pointer-it!\n");
+    } else {
+        printf("-> GABIM: Nota e re nuk eshte valide.\n");
     }
 }
 
@@ -29,14 +29,19 @@ int main() {
     int zgjedhja;
 
     while (1) {
-        // Menuja kryesore me Switch
-        printf("\n--- STUDENT PROGRESS TRACKER ---\n");
-        printf("1. Regjistro nje nxenes te ri\n");
+        printf("\n--- STUDENT PROGRESS TRACKER V2.0 ---\n");
+        printf("1. Shto nje regjistrim te ri\n");
         printf("2. Shfaq listen e nxenesve\n");
-        printf("3. Shto bonus per nje nxenes (Pointer Test)\n");
+        printf("3. Perditeso noten (Pointer function)\n");
         printf("4. Mbyll programin\n");
         printf("Zgjedhja juaj: ");
-        scanf("%d", &zgjedhja);
+
+        // Validimi i menus kryesore (Moslemi i karaktereve/gabimeve)
+        if (scanf("%d", &zgjedhja) != 1) {
+            printf("!!! GABIM: Ju lutem jepni nje numer valid (1-4).\n");
+            while(getchar() != '\n'); 
+            continue;
+        }
 
         if (zgjedhja == 4) break;
 
@@ -47,49 +52,67 @@ int main() {
                     scanf("%d", &nxenesit[count].id);
                     printf("Emri: ");
                     scanf("%s", nxenesit[count].emri);
-                    printf("Nota fillestare: ");
+                    printf("Nota (1-10): ");
                     scanf("%f", &nxenesit[count].nota);
-                    
-                    // Caktimi i statusit fillestar me Enum
-                    nxenesit[count].statusi = AKTIV;
-                    
+
+                    // --- DEGEZIMI I DYTE (Switch per Statusin/Enum) ---
+                    int zgjedhjaStatusi;
+                    printf("Zgjidhni Kategorine e Progresit:\n");
+                    printf("1: Shkelqyeshem, 2: Mire, 3: Mbifillim, 4: Dobet\n");
+                    printf("Zgjedhja: ");
+                    scanf("%d", &zgjedhjaStatusi);
+
+                    switch (zgjedhjaStatusi) {
+                        case 1: nxenesit[count].statusi = SHKELQYESHEM; break;
+                        case 2: nxenesit[count].statusi = MIRE; break;
+                        case 3: nxenesit[count].statusi = MBIFILLIM; break;
+                        case 4: nxenesit[count].statusi = DOBET; break;
+                        default:
+                            printf("-> Status i pavlefshem! Po vendoset: DOBET si default.\n");
+                            nxenesit[count].statusi = DOBET;
+                            break;
+                    }
                     count++;
-                    printf("-> Sukses: Nxenezi u regjistrua!\n");
+                    printf("-> Nxenezi u regjistrua!\n");
                 } else {
-                    printf("\n!!! GABIM: Nuk ka hapesire per regjistrime te reja (%d/%d) !!!\n", count, MAX_STUDENTS);
+                    printf("!!! GABIM: Kapaciteti maksimal u arrit (%d).\n", MAX_STUDENTS);
                 }
                 break;
 
             case 2:
                 if (count == 0) {
-                    printf("\nLista eshte e zbrazet.\n");
+                    printf("\nNuk ka regjistrime.\n");
                 } else {
-                    printf("\n--- LISTA E PROGRESIT ---\n");
-                    printf("ID\tEmri\t\tNota\tStatusi\n");
+                    printf("\nID\tEmri\t\tNota\tStatusi\n");
+                    printf("--------------------------------------------\n");
                     for (int i = 0; i < count; i++) {
-                        printf("%d\t%s\t\t%.2f\t%s\n", 
-                                nxenesit[i].id, 
-                                nxenesit[i].emri, 
-                                nxenesit[i].nota,
-                                nxenesit[i].statusi == AKTIV ? "Aktiv" : "Tjeter");
+                        printf("%d\t%s\t\t%.2f\t", nxenesit[i].id, nxenesit[i].emri, nxenesit[i].nota);
+                        
+                        // Konvertimi i Enum ne tekst te lexueshem
+                        switch (nxenesit[i].statusi) {
+                            case SHKELQYESHEM: printf("Shkelqyeshem\n"); break;
+                            case MIRE: printf("Mire\n"); break;
+                            case MBIFILLIM: printf("Mbifillim\n"); break;
+                            case DOBET: printf("Dobet\n"); break;
+                        }
                     }
                 }
                 break;
 
             case 3:
                 if (count > 0) {
-                    // Shembull praktik i perdorimit te pointerit
-                    // Marrim nxenesin e fundit te shtuar dhe i japim bonus
-                    printf("\nDuke i dhene 0.5 bonus nxenesit te fundit (%s)...\n", nxenesit[count-1].emri);
-                    shtoBonus(&nxenesit[count-1].nota, 0.5);
-                    printf("Nota e re: %.2f\n", nxenesit[count-1].nota);
+                    float notaRe;
+                    printf("Jepni noten e re per nxenesin e fundit (%s): ", nxenesit[count-1].emri);
+                    scanf("%f", &notaRe);
+                    perditesoNoten(&nxenesit[count-1].nota, notaRe);
                 } else {
-                    printf("\nNuk ka nxenes per te modifikuar.\n");
+                    printf("-> Nuk ka nxenes ne liste.\n");
                 }
                 break;
 
             default:
-                printf("\nZgjedhje e pavlefshme!\n");
+                printf("!!! GABIM: Zgjedhje e pavlefshme.\n");
+                break;
         }
     }
 
