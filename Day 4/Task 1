@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 5  
+
+struct Record {
+    char name[50];
+    int age;
+    double progress;
+};
+
+int main() {
+
+    struct Record records[MAX];
+    int count = 0;  // sa regjistrime kemi
+    int choice;
+
+    while(1) {
+        printf("\n--- MENU ---\n");
+        printf("1. Add Record\n");
+        printf("2. Show All Records\n");
+        printf("3. Exit\n");
+        printf("Choice: ");
+        scanf("%d", &choice);
+
+        if(choice == 1) {
+            // kontroll kufiri
+            if(count >= MAX) {
+                printf("Maximum capacity reached! Cannot add more records.\n");
+                continue;
+            }
+
+            printf("\nEnter name: ");
+            scanf("%s", records[count].name);
+
+            printf("Enter age: ");
+            scanf("%d", &records[count].age);
+
+            printf("Enter progress (0-100): ");
+            scanf("%lf", &records[count].progress);
+
+            count++;
+            printf("Record added successfully!\n");
+        }
+
+        else if(choice == 2) {
+            if(count == 0) {
+                printf("No records available.\n");
+                continue;
+            }
+
+            printf("\n--- ALL RECORDS ---\n");
+            for(int i = 0; i < count; i++) {
+                printf("\nRecord %d:\n", i + 1);
+                printf("Name: %s\n", records[i].name);
+                printf("Age: %d\n", records[i].age);
+                printf("Progress: %.2lf\n", records[i].progress);
+            }
+
+            printf("\nTotal records: %d / %d\n", count, MAX);
+        }
+
+        else if(choice == 3) {
+            printf("Exiting program...\n");
+            break;
+        }
+
+        else {
+            printf("Invalid choice!\n");
+        }
+    }
+
+    return 0;
+}
