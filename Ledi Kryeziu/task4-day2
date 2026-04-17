@@ -1,189 +1,57 @@
 #include <stdio.h>
-#include <string.h>
-
-#define MAX_RECORDS 5
-
-typedef enum {
-    BEGINNER = 1,
-    INTERMEDIATE,
-    ADVANCED,
-    COMPLETED
-} Status;
-
-struct ProgressRecord {
-    int id;
-    char name[50];
-    int completedTasks;
-    float averageScore;
-    Status status;
-};
-
-void clearBuffer() {
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
-}
-
-int readInt() {
-    int value;
-    while (scanf("%d", &value) != 1) {
-        printf("Input i pavlefshem. Shkruaj numer: ");
-        clearBuffer();
-    }
-    clearBuffer();
-    return value;
-}
-
-float readFloat() {
-    float value;
-    while (scanf("%f", &value) != 1) {
-        printf("Input i pavlefshem. Shkruaj numer: ");
-        clearBuffer();
-    }
-    clearBuffer();
-    return value;
-}
-
-Status chooseStatus() {
-    int option;
-
-    while (1) {
-        printf("Zgjedh statusin:\n");
-        printf("1. Beginner\n");
-        printf("2. Intermediate\n");
-        printf("3. Advanced\n");
-        printf("4. Completed\n");
-        printf("Zgjedhja: ");
-
-        option = readInt();
-
-        switch (option) {
-            case 1:
-                return BEGINNER;
-            case 2:
-                return INTERMEDIATE;
-            case 3:
-                return ADVANCED;
-            case 4:
-                return COMPLETED;
-            default:
-                printf("Status i pavlefshem. Provo perseri.\n");
-        }
-    }
-}
-
-void printStatus(Status status) {
-    switch (status) {
-        case BEGINNER:
-            printf("Beginner");
-            break;
-        case INTERMEDIATE:
-            printf("Intermediate");
-            break;
-        case ADVANCED:
-            printf("Advanced");
-            break;
-        case COMPLETED:
-            printf("Completed");
-            break;
-        default:
-            printf("Unknown");
-    }
-}
-
-void addRecord(struct ProgressRecord records[], int *count) {
-    if (*count >= MAX_RECORDS) {
-        printf("\nNuk mund te shtohen regjistrime te reja.\n");
-        printf("Kapaciteti maksimal prej %d eshte arritur.\n", MAX_RECORDS);
-        return;
-    }
-
-    struct ProgressRecord *r = &records[*count];
-
-    printf("\n--- Shto regjistrim te ri ---\n");
-
-    r->id = *count + 1;
-
-    printf("Emri i nxenesit: ");
-    fgets(r->name, sizeof(r->name), stdin);
-    r->name[strcspn(r->name, "\n")] = '\0';
-
-    printf("Numri i detyrave te perfunduara: ");
-    r->completedTasks = readInt();
-
-    printf("Piket mesatare: ");
-    r->averageScore = readFloat();
-
-    r->status = chooseStatus();
-
-    (*count)++;
-
-    printf("Regjistrimi u shtua me sukses.\n");
-    printf("Regjistrime aktuale: %d / %d\n", *count, MAX_RECORDS);
-}
-
-void showAllRecords(struct ProgressRecord records[], int count) {
-    int i;
-
-    if (count == 0) {
-        printf("\nNuk ka ende regjistrime te ruajtura.\n");
-        return;
-    }
-
-    printf("\n===== TE GJITHA REGJISTRIMET =====\n");
-
-    for (i = 0; i < count; i++) {
-        printf("\nRegjistrimi %d\n", i + 1);
-        printf("ID: %d\n", records[i].id);
-        printf("Emri: %s\n", records[i].name);
-        printf("Detyra te perfunduara: %d\n", records[i].completedTasks);
-        printf("Piket mesatare: %.2f\n", records[i].averageScore);
-        printf("Statusi: ");
-        printStatus(records[i].status);
-        printf("\n");
-        printf("----------------------------\n");
-    }
-}
-
-void showStatus(int count) {
-    printf("\n===== GJENDJA E PROGRAMIT =====\n");
-    printf("Regjistrime te ruajtura: %d\n", count);
-    printf("Kapaciteti maksimal: %d\n", MAX_RECORDS);
-    printf("Hapesire e lire: %d\n", MAX_RECORDS - count);
-}
 
 int main() {
-    struct ProgressRecord records[MAX_RECORDS];
-    int currentCount = 0;
-    int choice;
+    int age, workshopOption;
+    char initial;
+    double score;
 
-    do {
-        printf("\n========== MENU ==========\n");
-        printf("1. Shto regjistrim\n");
-        printf("2. Shfaq te gjitha regjistrimet\n");
-        printf("3. Shfaq gjendjen e programit\n");
-        printf("4. Dil\n");
-        printf("Zgjedh opsionin: ");
+    printf("Enter age: ");
+    scanf("%d", &age);
 
-        choice = readInt();
+    printf("Enter initial: ");
+    scanf(" %c", &initial);
 
-        switch (choice) {
-            case 1:
-                addRecord(records, &currentCount);
-                break;
-            case 2:
-                showAllRecords(records, currentCount);
-                break;
-            case 3:
-                showStatus(currentCount);
-                break;
-            case 4:
-                printf("\nProgrami u mbyll.\n");
-                break;
-            default:
-                printf("\nOpsion i pavlefshem. Provo perseri.\n");
-        }
+    printf("Enter previous score: ");
+    scanf("%lf", &score);
 
-    } while (choice != 4);
+    printf("Choose workshop (1, 2 or 3): ");
+    scanf("%d", &workshopOption);
+
+    printf("\n===== Result Summary =====\n");
+
+    printf("Age: %d\n", age);
+    printf("Initial: %c\n", initial);
+    printf("Previous Score: %.2lf\n", score);
+
+    if (age >= 14 && age <= 25) {
+        printf("Participation: Allowed\n");
+    } else {
+        printf("Participation: Not allowed\n");
+    }
+
+    if (score >= 0 && score < 50) {
+        printf("Level: Needs more practice\n");
+    } else if (score >= 50 && score < 80) {
+        printf("Level: Ready to continue\n");
+    } else if (score >= 80 && score <= 100) {
+        printf("Level: Ready for challenge\n");
+    } else {
+        printf("Level: Invalid score\n");
+    }
+
+    switch (workshopOption) {
+        case 1:
+            printf("Workshop: Programming Basics\n");
+            break;
+        case 2:
+            printf("Workshop: Web Development\n");
+            break;
+        case 3:
+            printf("Workshop: Problem Solving\n");
+            break;
+        default:
+            printf("Workshop: Invalid option\n");
+    }
 
     return 0;
 }
