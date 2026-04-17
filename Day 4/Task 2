@@ -16,6 +16,15 @@ struct Student {
     enum Status status;
 };
 
+void setStatus(struct Student *s) {
+    if(s->progress < 40)
+        s->status = LOW;
+    else if(s->progress < 70)
+        s->status = MEDIUM;
+    else
+        s->status = HIGH;
+}
+
 const char* getStatusText(enum Status s) {
     switch(s) {
         case LOW: return "LOW";
@@ -28,12 +37,12 @@ const char* getStatusText(enum Status s) {
 int main() {
 
     struct Student students[MAX] = {
-        {1, "Milot", 85.5, HIGH},
-        {2, "Ardi", 60.0, MEDIUM},
-        {3, "Luan", 30.0, LOW}
+        {1, "Ardi", 75.5, HIGH},
+        {2, "Luan", 60.0, MEDIUM},
+        {3, "Era", 40.0, LOW}
     };
 
-    int count = 3; 
+    int count = 3;
     int choice;
 
     while(1) {
@@ -43,18 +52,13 @@ int main() {
         printf("2. Show Students\n");
         printf("3. Exit\n");
         printf("Choice: ");
-
-        if(scanf("%d", &choice) != 1) {
-            printf("Invalid input! Try again.\n");
-            while(getchar() != '\n');
-            continue;
-        }
+        scanf("%d", &choice);
 
         switch(choice) {
 
             case 1:
                 if(count >= MAX) {
-                    printf("Maximum capacity reached!\n");
+                    printf("Max limit reached!\n");
                     break;
                 }
 
@@ -67,40 +71,18 @@ int main() {
                 printf("Enter Progress (0-100): ");
                 scanf("%lf", &students[count].progress);
 
-                int statusChoice;
-
-                printf("\nSelect Status:\n");
-                printf("1. LOW\n2. MEDIUM\n3. HIGH\n");
-                printf("Choice: ");
-
-                scanf("%d", &statusChoice);
-
-                switch(statusChoice) {
-                    case 1:
-                        students[count].status = LOW;
-                        break;
-                    case 2:
-                        students[count].status = MEDIUM;
-                        break;
-                    case 3:
-                        students[count].status = HIGH;
-                        break;
-                    default:
-                        printf("Invalid status! Setting LOW.\n");
-                        students[count].status = LOW;
-                }
+                // pointer usage
+                setStatus(&students[count]);
 
                 count++;
-                printf("Student added successfully!\n");
+                printf("Student added!\n");
                 break;
 
             case 2:
                 if(count == 0) {
-                    printf("No records available.\n");
+                    printf("No data!\n");
                     break;
                 }
-
-                printf("\n--- STUDENTS ---\n");
 
                 for(int i = 0; i < count; i++) {
                     printf("\nStudent %d\n", i+1);
@@ -109,18 +91,13 @@ int main() {
                     printf("Progress: %.2lf\n", students[i].progress);
                     printf("Status: %s\n", getStatusText(students[i].status));
                 }
-
-                printf("\nTotal: %d / %d\n", count, MAX);
                 break;
 
             case 3:
-                printf("Exiting program...\n");
                 return 0;
 
             default:
-                printf("Invalid menu choice!\n");
+                printf("Invalid choice!\n");
         }
     }
-
-    return 0;
 }
