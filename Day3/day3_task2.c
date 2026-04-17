@@ -36,7 +36,7 @@ int main() {
     } else if (countOdd > countEven) {
         printf("Category with more numbers: Odd\n");
     } else {
-        printf("Both categories have the same amount of numbers.\n");
+        printf("Bth categories have the same amount of numbers.\n");
     }
 
     return 0;
